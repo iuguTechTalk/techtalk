@@ -1,0 +1,35 @@
+version: "3"
+services:
+  db:
+    image: mysql
+    restart: always
+    container_name: mysql
+    environment:
+      - MYSQL_ROOT_PASSWORD=mysql
+    ports:
+      - 3306:3306
+    networks:
+      - apps
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: rails
+    env_file: .env
+    volumes:
+      - .:/app
+    ports:
+      - 80:3000
+    command: bash start.sh
+    links:
+      - db
+    depends_on:
+      - db
+    networks:
+      - apps
+
+volumes:
+  mysql: null
+networks:
+  apps: null
